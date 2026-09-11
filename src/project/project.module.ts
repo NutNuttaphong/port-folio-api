@@ -1,0 +1,15 @@
+import { Module } from '@nestjs/common';
+import { ProjectService } from './project.service';
+import { ProjectController } from './project.controller';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Project, ProjectSchema } from '../project.schema';
+
+@Module({
+  // เพิ่ม imports: [ ... ] ครอบเอาไว้ตรงนี้ครับ
+  imports: [
+    MongooseModule.forFeature([{ name: Project.name, schema: ProjectSchema }]),
+  ],
+  controllers: [ProjectController],
+  providers: [ProjectService],
+})
+export class ProjectModule {}
