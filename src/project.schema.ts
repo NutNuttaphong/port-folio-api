@@ -11,6 +11,9 @@ export class Project {
   @Prop()
   description!: string;
 
+  @Prop()
+  urlProject!: string;
+
   @Prop({ default: 'In Progress' })
   status!: string;
 

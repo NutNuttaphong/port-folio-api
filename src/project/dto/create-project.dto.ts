@@ -9,6 +9,10 @@ export class CreateProjectDto {
   @IsOptional()
   description?: string; // ใส่ ? เพื่อบอกว่าเป็นค่าว่างได้ (ถ้าไม่ได้กรอก)
 
+  @IsString()
+  @IsOptional()
+  urlProject?: string; // ใส่ ? เพื่อบอกว่าเป็นค่าว่างได้ (ถ้าไม่ได้กรอก)
+
   // @IsString()
   // @IsNotEmpty()
   // date?: string; // บังคับกรอกวันที่
