@@ -9,6 +9,14 @@ export class CreatePortfolioDto {
   @IsOptional()
   description?: string; // ใส่ ? เพื่อบอกว่าเป็นค่าว่างได้ (ถ้าไม่ได้กรอก)
 
+  @IsString()
+  @IsOptional()
+  url?: string; // ใส่ ? เพื่อบอกว่าเป็นค่าว่างได้ (ถ้าไม่ได้กรอก)
+
+  @IsString()
+  @IsOptional()
+  tag?: string; // ใส่ ? เพื่อบอกว่าเป็นค่าว่างได้ (ถ้าไม่ได้กรอก)
+
   // @IsString()
   // @IsNotEmpty()
   // date?: string; // บังคับกรอกวันที่

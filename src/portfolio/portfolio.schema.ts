@@ -11,6 +11,12 @@ export class Portfolio {
   @Prop()
   description!: string;
 
+  @Prop()
+  url!: string;
+
+  @Prop()
+  tag!: string;
+
   @Prop({ default: 'In Progress' })
   status!: string;
 
