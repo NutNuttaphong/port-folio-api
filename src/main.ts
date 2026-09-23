@@ -9,6 +9,9 @@ async function bootstrap() {
 
   app.enableCors(); // (ถ้ามีอยู่แล้วคงไว้ครับ)
 
+  const port = process.env.PORT || 3000;
+  await app.listen(port, '0.0.0.0');
+
   // 🔥 3. ใช้คำสั่ง useStaticAssets ซึ่งเป็นท่ามาตรฐานของ NestJS
   app.useStaticAssets(join(process.cwd(), 'uploads'), {
     prefix: '/uploads/', // กำหนดว่าถ้า URL มี /uploads/ ให้มาหาไฟล์ที่นี่
