@@ -7,8 +7,24 @@ async function bootstrap() {
   // 🔥 2. ระบุให้ NestJS รู้ว่าเราใช้ Express เป็นโครงสร้างหลัก (เพื่อจะได้ใช้คำสั่งแจกไฟล์ได้)
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  const allowedOrigins = [
+    'https://port-folio-web-phi.vercel.app',
+    'http://localhost:5173',
+    'http://localhost:3000',
+  ];
+
   app.enableCors({
-    origin: true,
+    origin: (origin, callback) => {
+      if (
+        !origin ||
+        allowedOrigins.includes(origin) ||
+        origin.endsWith('.vercel.app')
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
   });
 

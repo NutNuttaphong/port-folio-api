@@ -14,29 +14,19 @@ import { InspirationService } from './inspiration.service';
 import { CreateInspirationDto } from './dto/create-inspiration.dto';
 import { UpdateInspirationDto } from './dto/update-inspiration.dto';
 
-import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { multerOptions } from '../common/multer.config';
 
 export interface LocalFile {
   filename: string;
   originalname: string;
 }
 
-const multerStorage = diskStorage({
-  destination: './uploads',
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    const ext = extname(file.originalname);
-    cb(null, `${uniqueSuffix}${ext}`);
-  },
-});
-
 @Controller('inspiration')
 export class InspirationController {
   constructor(private readonly inspirationService: InspirationService) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('image', { storage: multerStorage }))
+  @UseInterceptors(FileInterceptor('image', multerOptions))
   create(
     @Body() createInspirationDto: CreateInspirationDto,
     @UploadedFile() file?: LocalFile,
@@ -58,7 +48,7 @@ export class InspirationController {
   }
 
   @Patch(':id')
-  @UseInterceptors(FileInterceptor('image', { storage: multerStorage }))
+  @UseInterceptors(FileInterceptor('image', multerOptions))
   update(
     @Param('id') id: string,
     @Body() updateInspirationDto: UpdateInspirationDto,

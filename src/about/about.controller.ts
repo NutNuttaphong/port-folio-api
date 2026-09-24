@@ -14,29 +14,19 @@ import { AboutService } from './about.service';
 import { CreateAboutDto } from './dto/create-about.dto';
 import { UpdateAboutDto } from './dto/update-about.dto';
 
-import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { multerOptions } from '../common/multer.config';
 
 export interface LocalFile {
   filename: string;
   originalname: string;
 }
 
-const multerStorage = diskStorage({
-  destination: './uploads',
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    const ext = extname(file.originalname);
-    cb(null, `${uniqueSuffix}${ext}`);
-  },
-});
-
 @Controller('about')
 export class AboutController {
   constructor(private readonly aboutService: AboutService) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('image', { storage: multerStorage }))
+  @UseInterceptors(FileInterceptor('image', multerOptions))
   create(
     @Body() createAboutDto: CreateAboutDto,
     @UploadedFile() file?: LocalFile,
@@ -58,7 +48,7 @@ export class AboutController {
   }
 
   @Patch(':id')
-  @UseInterceptors(FileInterceptor('image', { storage: multerStorage }))
+  @UseInterceptors(FileInterceptor('image', multerOptions))
   update(
     @Param('id') id: string,
     @Body() updateAboutDto: UpdateAboutDto,

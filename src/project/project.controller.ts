@@ -14,23 +14,12 @@ import { ProjectService } from './project.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 
-import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { multerOptions } from '../common/multer.config';
 
 export interface LocalFile {
   filename: string;
   originalname: string;
 }
-
-// 🔥 สร้างตัวแปรเก็บการตั้งค่าเซฟไฟล์ เพื่อจะได้เรียกใช้ซ้ำได้ทั้ง Post และ Patch แบบโค้ดไม่รก
-const multerStorage = diskStorage({
-  destination: './uploads',
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    const ext = extname(file.originalname);
-    cb(null, `${uniqueSuffix}${ext}`);
-  },
-});
 
 @Controller('project')
 export class ProjectController {
@@ -40,7 +29,7 @@ export class ProjectController {
   // 1. ฟังก์ชัน Create (เพิ่มข้อมูล)
   // ==========================================
   @Post()
-  @UseInterceptors(FileInterceptor('image', { storage: multerStorage }))
+  @UseInterceptors(FileInterceptor('image', multerOptions))
   async create(
     @Body() createProjectDto: CreateProjectDto,
     @UploadedFile() file?: LocalFile,
@@ -70,7 +59,7 @@ export class ProjectController {
   // 3. ฟังก์ชัน Update (แก้ไขข้อมูล)
   // ==========================================
   @Patch(':id')
-  @UseInterceptors(FileInterceptor('image', { storage: multerStorage })) // 🔥 ติดอาวุธรับไฟล์ให้ Patch ด้วย
+  @UseInterceptors(FileInterceptor('image', multerOptions)) // 🔥 ติดอาวุธรับไฟล์ให้ Patch ด้วย
   async update(
     @Param('id') id: string,
     @Body() updateProjectDto: UpdateProjectDto,

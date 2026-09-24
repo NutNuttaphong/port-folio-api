@@ -14,30 +14,19 @@ import { PortfolioService } from './portfolio.service';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { UpdatePortfolioDto } from './dto/update-portfolio.dto';
 
-import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { multerOptions } from '../common/multer.config';
 
 export interface LocalFile {
   filename: string;
   originalname: string;
 }
 
-// 🔥 สร้างตัวแปรเก็บการตั้งค่าเซฟไฟล์ เพื่อจะได้เรียกใช้ซ้ำได้ทั้ง Post และ Patch แบบโค้ดไม่รก
-const multerStorage = diskStorage({
-  destination: './uploads',
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    const ext = extname(file.originalname);
-    cb(null, `${uniqueSuffix}${ext}`);
-  },
-});
-
 @Controller('portfolio')
 export class PortfolioController {
   constructor(private readonly portfolioService: PortfolioService) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('image', { storage: multerStorage }))
+  @UseInterceptors(FileInterceptor('image', multerOptions))
   async create(
     @Body() createPortfolioDto: CreatePortfolioDto, // 🔥 แก้ชื่อตัวแปรเป็นตัวพิมพ์เล็ก
     @UploadedFile() file?: LocalFile,
@@ -61,7 +50,7 @@ export class PortfolioController {
   }
 
   @Patch(':id')
-  @UseInterceptors(FileInterceptor('image', { storage: multerStorage }))
+  @UseInterceptors(FileInterceptor('image', multerOptions))
   async update(
     @Param('id') id: string,
     @Body() updatePortfolioDto: UpdatePortfolioDto, // 🔥 แก้ชื่อตัวแปรเป็นตัวพิมพ์เล็ก

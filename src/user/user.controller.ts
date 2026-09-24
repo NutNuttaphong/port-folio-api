@@ -14,8 +14,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
-import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { multerOptions } from '../common/multer.config';
 import { LoginUserDto } from './dto/login-user.dto';
 
 export interface LocalFile {
@@ -23,21 +22,12 @@ export interface LocalFile {
   originalname: string;
 }
 
-const multerStorage = diskStorage({
-  destination: './uploads',
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    const ext = extname(file.originalname);
-    cb(null, `${uniqueSuffix}${ext}`);
-  },
-});
-
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('image', { storage: multerStorage }))
+  @UseInterceptors(FileInterceptor('image', multerOptions))
   create(
     @Body() createUserDto: CreateUserDto,
     @UploadedFile() file?: LocalFile,
