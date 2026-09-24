@@ -43,7 +43,7 @@ export class UserController {
     @UploadedFile() file?: LocalFile,
   ) {
     if (file) {
-      createUserDto.imageUrl = `http://localhost:3000/uploads/${file.filename}`;
+      createUserDto.imageUrl = `/uploads/${file.filename}`;
     }
     return this.userService.create(createUserDto);
   }

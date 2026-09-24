@@ -42,7 +42,7 @@ export class AboutController {
     @UploadedFile() file?: LocalFile,
   ) {
     if (file) {
-      createAboutDto.imageUrl = `http://localhost:3000/uploads/${file.filename}`;
+      createAboutDto.imageUrl = `/uploads/${file.filename}`;
     }
     return this.aboutService.create(createAboutDto);
   }
@@ -65,7 +65,7 @@ export class AboutController {
     @UploadedFile() file?: LocalFile,
   ) {
     if (file) {
-      updateAboutDto.imageUrl = `http://localhost:3000/uploads/${file.filename}`;
+      updateAboutDto.imageUrl = `/uploads/${file.filename}`;
     }
 
     return this.aboutService.update(id, updateAboutDto);

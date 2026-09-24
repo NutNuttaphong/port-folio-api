@@ -42,7 +42,7 @@ export class InspirationController {
     @UploadedFile() file?: LocalFile,
   ) {
     if (file) {
-      createInspirationDto.imageUrl = `http://localhost:3000/uploads/${file.filename}`;
+      createInspirationDto.imageUrl = `/uploads/${file.filename}`;
     }
     return this.inspirationService.create(createInspirationDto);
   }
@@ -65,7 +65,7 @@ export class InspirationController {
     @UploadedFile() file?: LocalFile,
   ) {
     if (file) {
-      updateInspirationDto.imageUrl = `http://localhost:3000/uploads/${file.filename}`;
+      updateInspirationDto.imageUrl = `/uploads/${file.filename}`;
     }
     return this.inspirationService.update(+id, updateInspirationDto);
   }

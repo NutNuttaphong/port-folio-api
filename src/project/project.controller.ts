@@ -47,7 +47,7 @@ export class ProjectController {
   ) {
     if (file) {
       // ใช้ createProjectDto
-      createProjectDto.imageUrl = `http://localhost:3000/uploads/${file.filename}`;
+      createProjectDto.imageUrl = `/uploads/${file.filename}`;
     }
     // สั่ง projectService.create
     return this.projectService.create(createProjectDto);
@@ -78,7 +78,7 @@ export class ProjectController {
   ) {
     if (file) {
       // ถ้ามีการส่งรูปใหม่มา ค่อยอัปเดต imageUrl
-      updateProjectDto.imageUrl = `http://localhost:3000/uploads/${file.filename}`;
+      updateProjectDto.imageUrl = `/uploads/${file.filename}`;
     }
     return this.projectService.update(id, updateProjectDto);
   }

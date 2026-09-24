@@ -42,7 +42,7 @@ export class ServController {
     @UploadedFile() file?: LocalFile,
   ) {
     if (file) {
-      createServDto.imageUrl = `http://localhost:3000/uploads/${file.filename}`;
+      createServDto.imageUrl = `/uploads/${file.filename}`;
     }
     return this.servService.create(createServDto);
   }
@@ -65,7 +65,7 @@ export class ServController {
     @UploadedFile() file?: LocalFile,
   ) {
     if (file) {
-      updateServDto.imageUrl = `http://localhost:3000/uploads/${file.filename}`;
+      updateServDto.imageUrl = `/uploads/${file.filename}`;
     }
     return this.servService.update(id, updateServDto);
   }

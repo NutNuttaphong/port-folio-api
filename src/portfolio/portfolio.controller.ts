@@ -43,7 +43,7 @@ export class PortfolioController {
     @UploadedFile() file?: LocalFile,
   ) {
     if (file) {
-      createPortfolioDto.imageUrl = `http://localhost:3000/uploads/${file.filename}`;
+      createPortfolioDto.imageUrl = `/uploads/${file.filename}`;
     }
     // 🔥 เปลี่ยนจาก projectService เป็น portfolioService
     return await this.portfolioService.create(createPortfolioDto);
@@ -68,7 +68,7 @@ export class PortfolioController {
     @UploadedFile() file?: LocalFile,
   ) {
     if (file) {
-      updatePortfolioDto.imageUrl = `http://localhost:3000/uploads/${file.filename}`;
+      updatePortfolioDto.imageUrl = `/uploads/${file.filename}`;
     }
     // 🔥 เปลี่ยนจาก projectService เป็น portfolioService และใส่ await
     return await this.portfolioService.update(id, updatePortfolioDto);
