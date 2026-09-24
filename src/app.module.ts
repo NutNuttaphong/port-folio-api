@@ -12,7 +12,11 @@ import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017/project_management_db'),
+    MongooseModule.forRoot(
+      process.env.MONGODB_URI ||
+        process.env.MONGO_URL ||
+        'mongodb://127.0.0.1:27017/project_management_db',
+    ),
     ProjectModule,
     PortfolioModule,
     AboutModule,
