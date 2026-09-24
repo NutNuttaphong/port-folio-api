@@ -7,7 +7,10 @@ async function bootstrap() {
   // 🔥 2. ระบุให้ NestJS รู้ว่าเราใช้ Express เป็นโครงสร้างหลัก (เพื่อจะได้ใช้คำสั่งแจกไฟล์ได้)
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  app.enableCors(); // (ถ้ามีอยู่แล้วคงไว้ครับ)
+  app.enableCors({
+    origin: true,
+    credentials: true,
+  });
 
   // 🔥 3. ใช้คำสั่ง useStaticAssets ซึ่งเป็นท่ามาตรฐานของ NestJS
   app.useStaticAssets(join(process.cwd(), 'uploads'), {
@@ -16,5 +19,6 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3000;
   await app.listen(port, '0.0.0.0');
+  console.log(`🚀 Application is successfully listening on 0.0.0.0:${port}`);
 }
 bootstrap();
