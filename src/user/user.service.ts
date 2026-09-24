@@ -19,11 +19,11 @@ export class UserService {
   }
 
   async findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
+    return this.userModel.find().select('-password').exec();
   }
 
   async findOne(id: string) {
-    return this.userModel.findById(id).exec();
+    return this.userModel.findById(id).select('-password').exec();
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
