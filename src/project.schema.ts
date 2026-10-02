@@ -21,6 +21,12 @@ export class Project {
   date!: Date;
 
   @Prop()
+  urlGithubProject?: string;
+
+  @Prop({ type: [String], default: [] })
+  tags?: string[];
+
+  @Prop()
   imageUrl?: string;
 }
 

@@ -21,6 +21,29 @@ export interface LocalFile {
   originalname: string;
 }
 
+function parseTags(rawTags: any): string[] {
+  if (!rawTags) return [];
+  if (Array.isArray(rawTags)) {
+    return rawTags.map(String).map((t) => t.trim()).filter(Boolean);
+  }
+  if (typeof rawTags === 'string') {
+    try {
+      const parsed = JSON.parse(rawTags);
+      if (Array.isArray(parsed)) {
+        return parsed.map(String).map((t) => t.trim()).filter(Boolean);
+      }
+    } catch {
+      // Fallback: handle comma-separated or bracketed strings like [a, b]
+      return rawTags
+        .replace(/^[\[\s]+|[\]\s]+$/g, '')
+        .split(',')
+        .map((t) => t.replace(/^["'\s]+|["'\s]+$/g, '').trim())
+        .filter(Boolean);
+    }
+  }
+  return [];
+}
+
 @Controller('project')
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
@@ -35,8 +58,10 @@ export class ProjectController {
     @UploadedFile() file?: LocalFile,
   ) {
     if (file) {
-      // ใช้ createProjectDto
       createProjectDto.imageUrl = `/uploads/${file.filename}`;
+    }
+    if (createProjectDto.tags !== undefined) {
+      createProjectDto.tags = parseTags(createProjectDto.tags);
     }
     // สั่ง projectService.create
     return this.projectService.create(createProjectDto);
@@ -68,6 +93,9 @@ export class ProjectController {
     if (file) {
       // ถ้ามีการส่งรูปใหม่มา ค่อยอัปเดต imageUrl
       updateProjectDto.imageUrl = `/uploads/${file.filename}`;
+    }
+    if (updateProjectDto.tags !== undefined) {
+      updateProjectDto.tags = parseTags(updateProjectDto.tags);
     }
     return this.projectService.update(id, updateProjectDto);
   }

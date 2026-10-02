@@ -13,6 +13,10 @@ export class CreateProjectDto {
   @IsOptional()
   urlProject?: string; // ใส่ ? เพื่อบอกว่าเป็นค่าว่างได้ (ถ้าไม่ได้กรอก)
 
+  @IsString()
+  @IsOptional()
+  urlGithubProject?: string; // ใส่ ? เพื่อบอกว่าเป็นค่าว่างได้ (ถ้าไม่ได้กรอก)
+
   // @IsString()
   // @IsNotEmpty()
   // date?: string; // บังคับกรอกวันที่
@@ -28,4 +32,7 @@ export class CreateProjectDto {
   @IsString()
   @IsOptional()
   imageUrl?: string;
+
+  @IsOptional()
+  tags?: any;
 }
