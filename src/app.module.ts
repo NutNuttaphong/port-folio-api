@@ -9,6 +9,7 @@ import { AboutModule } from './about/about.module';
 import { InspirationModule } from './inspiration/inspiration.module';
 import { ServModule } from './serv/serv.module';
 import { UserModule } from './user/user.module';
+import { ContactModule } from './contact/contact.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { UserModule } from './user/user.module';
     InspirationModule,
     ServModule,
     UserModule,
+    ContactModule,
   ],
   controllers: [AppController],
   providers: [AppService],
