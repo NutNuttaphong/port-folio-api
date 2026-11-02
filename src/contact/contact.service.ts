@@ -162,26 +162,31 @@ export class ContactService {
 
     const lineApiUrl = 'https://api.line.me/v2/bot/message/push';
 
+    const isLead = message.includes('📋 [แบบฟอร์มฝากข้อมูลติดต่อกลับ]');
+    const cardAltText = isLead
+      ? `📋 มีข้อมูลติดต่อกลับใหม่! (#${sessionId})`
+      : `💬 ข้อความใหม่จากเว็บ (#${sessionId})`;
+
     const flexCard = {
       type: 'flex',
-      altText: `💬 ข้อความใหม่จากเว็บ (#${sessionId})`,
+      altText: cardAltText,
       contents: {
         type: 'bubble',
         header: {
           type: 'box',
           layout: 'vertical',
-          backgroundColor: '#091124',
+          backgroundColor: isLead ? '#0f766e' : '#091124',
           contents: [
             {
               type: 'text',
-              text: 'LIVE CHAT • MY-PROFILE',
+              text: isLead ? '🔥 LEAD • ข้อมูลติดต่อกลับใหม่' : 'LIVE CHAT • MY-PROFILE',
               weight: 'bold',
-              color: '#2dd4bf',
+              color: isLead ? '#ccfbf1' : '#2dd4bf',
               size: 'xs',
             },
             {
               type: 'text',
-              text: `ข้อความจากห้อง #${sessionId}`,
+              text: isLead ? `มีผู้สนใจติดต่อจากห้อง #${sessionId}` : `ข้อความจากห้อง #${sessionId}`,
               weight: 'bold',
               color: '#ffffff',
               size: 'md',
@@ -196,16 +201,17 @@ export class ContactService {
           contents: [
             {
               type: 'text',
-              text: '💬 ข้อความจากผู้ติดต่อ:',
+              text: isLead ? '📋 รายละเอียดการติดต่อกลับ:' : '💬 ข้อความจากผู้ติดต่อ:',
               size: 'xs',
               color: '#64748b',
+              weight: 'bold',
             },
             {
               type: 'text',
               text: message,
               size: 'sm',
               color: '#0f172a',
-              weight: 'bold',
+              weight: isLead ? 'regular' : 'bold',
               wrap: true,
             },
             {
