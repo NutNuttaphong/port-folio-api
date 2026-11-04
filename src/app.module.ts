@@ -17,6 +17,12 @@ import { ContactModule } from './contact/contact.module';
       process.env.MONGODB_URI ||
         process.env.MONGO_URL ||
         'mongodb://127.0.0.1:27017/project_management_db',
+      {
+        minPoolSize: 0, // ลด connection เหลือ 0 เมื่อ idle เพื่อให้ server sleep ได้
+        maxIdleTimeMS: 30000, // ปิด idle connection ภายใน 30 วินาที
+        serverSelectionTimeoutMS: 5000,
+        socketTimeoutMS: 45000,
+      },
     ),
     ProjectModule,
     PortfolioModule,

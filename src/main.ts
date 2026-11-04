@@ -34,7 +34,13 @@ async function bootstrap() {
   });
 
   const port = process.env.PORT || 3000;
-  await app.listen(port, '0.0.0.0');
+  const server = await app.listen(port, '0.0.0.0');
+
+  // ตั้งค่า Idle Timeout & Keep-Alive ให้ Server ตัด Connection ไวขึ้นเพื่อเข้าโหมด Sleep ได้
+  if (server && 'keepAliveTimeout' in server) {
+    (server as any).keepAliveTimeout = 5000;
+    (server as any).headersTimeout = 6000;
+  }
   console.log(`🚀 Application is successfully listening on 0.0.0.0:${port}`);
 }
 bootstrap();
