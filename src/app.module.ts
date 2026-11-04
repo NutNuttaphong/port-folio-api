@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -10,6 +10,7 @@ import { InspirationModule } from './inspiration/inspiration.module';
 import { ServModule } from './serv/serv.module';
 import { UserModule } from './user/user.module';
 import { ContactModule } from './contact/contact.module';
+import { MongoIdleMiddleware } from './common/mongo-idle.middleware';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ContactModule } from './contact/contact.module';
         maxIdleTimeMS: 30000, // ปิด idle connection ภายใน 30 วินาที
         serverSelectionTimeoutMS: 5000,
         socketTimeoutMS: 45000,
+        heartbeatFrequencyMS: 60000, // ลดความถี่ heartbeat เป็น 60 วินาที เพื่อไม่ให้ reset sleep timer
       },
     ),
     ProjectModule,
@@ -35,4 +37,9 @@ import { ContactModule } from './contact/contact.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    // ใช้ MongoIdleMiddleware ดักจับทุก Request เพื่อจัดการ Connect/Disconnect อัตโนมัติ
+    consumer.apply(MongoIdleMiddleware).forRoutes('*');
+  }
+}
