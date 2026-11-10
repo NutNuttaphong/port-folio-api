@@ -1,5 +1,7 @@
+import { JwtAuthGuard } from '../common/jwt-auth.guard';
 import {
   Controller,
+  UseGuards,
   Get,
   Post,
   Body,
@@ -25,6 +27,7 @@ export interface LocalFile {
 export class PortfolioController {
   constructor(private readonly portfolioService: PortfolioService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   @UseInterceptors(FileInterceptor('image', multerOptions))
   async create(
@@ -49,6 +52,7 @@ export class PortfolioController {
     return this.portfolioService.findOne(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @UseInterceptors(FileInterceptor('image', multerOptions))
   async update(
@@ -63,6 +67,7 @@ export class PortfolioController {
     return await this.portfolioService.update(id, updatePortfolioDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     // 🔥 ลบเครื่องหมาย + หน้า id ออก

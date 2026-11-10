@@ -27,7 +27,7 @@ export const multerOptions = {
     } else {
       cb(
         new BadRequestException(
-          'อนุญาตเฉพาะไฟล์รูปภาพ (jpg, jpeg, png, webp, gif, svg) เท่านั้น',
+          'Only image files (jpg, jpeg, png, webp, gif, svg) are allowed!',
         ),
         false,
       );

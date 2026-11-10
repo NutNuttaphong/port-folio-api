@@ -1,5 +1,7 @@
+import { JwtAuthGuard } from '../common/jwt-auth.guard';
 import {
   Controller,
+  UseGuards,
   Get,
   Post,
   Body,
@@ -25,6 +27,7 @@ export interface LocalFile {
 export class ServController {
   constructor(private readonly servService: ServService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   @UseInterceptors(FileInterceptor('image', multerOptions))
   create(
@@ -47,6 +50,7 @@ export class ServController {
     return this.servService.findOne(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @UseInterceptors(FileInterceptor('image', multerOptions))
   update(
@@ -60,6 +64,7 @@ export class ServController {
     return this.servService.update(id, updateServDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.servService.remove(id);

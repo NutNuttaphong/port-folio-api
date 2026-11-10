@@ -1,36 +1,45 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { NestExpressApplication } from '@nestjs/platform-express'; // 🔥 1. นำเข้า NestExpressApplication
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 
 async function bootstrap() {
-  // 🔥 2. ระบุให้ NestJS รู้ว่าเราใช้ Express เป็นโครงสร้างหลัก (เพื่อจะได้ใช้คำสั่งแจกไฟล์ได้)
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   const allowedOrigins = [
     'https://port-folio-web-phi.vercel.app',
     'http://localhost:5173',
+    'http://localhost:5174',
     'http://localhost:3000',
   ];
 
   app.enableCors({
     origin: (origin, callback) => {
-      if (
-        !origin ||
+      // Allow requests with no origin (like curl, mobile, Postman)
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      const isAllowed =
         allowedOrigins.includes(origin) ||
-        origin.endsWith('.vercel.app')
-      ) {
+        origin.endsWith('.vercel.app') ||
+        /^https?:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+)(:\d+)?$/.test(
+          origin,
+        );
+
+      if (isAllowed) {
         callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS'));
+        callback(null, false);
       }
     },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   });
 
-  // 🔥 3. ใช้คำสั่ง useStaticAssets ซึ่งเป็นท่ามาตรฐานของ NestJS
   app.useStaticAssets(join(process.cwd(), 'uploads'), {
-    prefix: '/uploads/', // กำหนดว่าถ้า URL มี /uploads/ ให้มาหาไฟล์ที่นี่
+    prefix: '/uploads/',
   });
 
   const port = process.env.PORT || 3000;
@@ -43,4 +52,5 @@ async function bootstrap() {
   }
   console.log(`🚀 Application is successfully listening on 0.0.0.0:${port}`);
 }
-bootstrap();
+
+void bootstrap();

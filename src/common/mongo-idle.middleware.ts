@@ -62,7 +62,7 @@ export class MongoIdleMiddleware implements NestMiddleware {
         }
       } else {
         let retries = 25;
-        while ((this.connection.readyState as number) !== 1 && retries > 0) {
+        while ((this.connection as any).readyState !== 1 && retries > 0) {
           await new Promise((resolve) => setTimeout(resolve, 100));
           retries--;
         }

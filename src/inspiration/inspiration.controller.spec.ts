@@ -8,7 +8,19 @@ describe('InspirationController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [InspirationController],
-      providers: [InspirationService],
+      providers: [
+        {
+          provide: InspirationService,
+          useValue: {
+            create: jest.fn(),
+            findAll: jest.fn(),
+            findOne: jest.fn(),
+            update: jest.fn(),
+            remove: jest.fn(),
+            login: jest.fn(),
+          },
+        },
+      ],
     }).compile();
 
     controller = module.get<InspirationController>(InspirationController);

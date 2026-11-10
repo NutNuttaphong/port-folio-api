@@ -1,5 +1,7 @@
+import { JwtAuthGuard } from '../common/jwt-auth.guard';
 import {
   Controller,
+  UseGuards,
   Post,
   Get,
   Body,
@@ -34,10 +36,7 @@ export class ContactController {
   // 2. ผู้ใช้จากหน้าเว็บส่งข้อความเข้ามา (Two-way Chat)
   @Post('send')
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
-  async sendUserMessage(
-    @Body() dto: SendUserMessageDto,
-    @Req() req: any,
-  ) {
+  async sendUserMessage(@Body() dto: SendUserMessageDto, @Req() req: any) {
     // 🍯 Honeypot check
     if (dto.honeypot && dto.honeypot.trim().length > 0) {
       return { success: true, messages: [] };
@@ -60,7 +59,8 @@ export class ContactController {
           throw new HttpException(
             {
               statusCode: HttpStatus.TOO_MANY_REQUESTS,
-              message: 'คุณส่งข้อความถี่เกินไป กรุณารอสักครู่ครับ',
+              message:
+                'You are sending messages too frequently. Please wait a moment.',
             },
             HttpStatus.TOO_MANY_REQUESTS,
           );
@@ -77,6 +77,7 @@ export class ContactController {
   }
 
   // 3. ตอบกลับข้อความ (ใช้โดย Admin หรือระบบภายใน)
+  @UseGuards(JwtAuthGuard)
   @Post('reply')
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   async replyMessage(@Body() dto: AdminReplyDto) {

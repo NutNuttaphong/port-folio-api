@@ -26,7 +26,9 @@ function getEnvValue(key: string): string | undefined {
         }
       }
     }
-  } catch {}
+  } catch {
+    /* ignore fallback */
+  }
   return undefined;
 }
 
@@ -50,7 +52,9 @@ export class ContactService {
         return session.messages;
       }
     } catch (e) {
-      this.logger.warn(`Could not read session from DB, using memory fallback: ${e}`);
+      this.logger.warn(
+        `Could not read session from DB, using memory fallback: ${e}`,
+      );
     }
 
     return this.inMemorySessions.get(sessionId) || [];
@@ -137,7 +141,9 @@ export class ContactService {
       this.logger.warn(`MongoDB admin reply save warning: ${e}`);
     }
 
-    this.logger.log(`Nuttaphong replied to session ${dto.sessionId}: ${dto.message}`);
+    this.logger.log(
+      `Nuttaphong replied to session ${dto.sessionId}: ${dto.message}`,
+    );
 
     return {
       success: true,
@@ -151,7 +157,9 @@ export class ContactService {
     const lineUserId = getEnvValue('LINE_USER_ID');
 
     if (!channelAccessToken || !lineUserId) {
-      this.logger.warn(`LINE Token not configured. Simulated message: ${message}`);
+      this.logger.warn(
+        `LINE Token not configured. Simulated message: ${message}`,
+      );
       return;
     }
 
@@ -162,10 +170,12 @@ export class ContactService {
 
     const lineApiUrl = 'https://api.line.me/v2/bot/message/push';
 
-    const isLead = message.includes('📋 [แบบฟอร์มฝากข้อมูลติดต่อกลับ]');
+    const isLead =
+      message.includes('📋 [แบบฟอร์มฝากข้อมูลติดต่อกลับ]') ||
+      message.includes('📋 [Contact Request Form]');
     const cardAltText = isLead
-      ? `📋 มีข้อมูลติดต่อกลับใหม่! (#${sessionId})`
-      : `💬 ข้อความใหม่จากเว็บ (#${sessionId})`;
+      ? `📋 New Contact Request! (#${sessionId})`
+      : `💬 New Web Message (#${sessionId})`;
 
     const flexCard = {
       type: 'flex',
@@ -179,14 +189,18 @@ export class ContactService {
           contents: [
             {
               type: 'text',
-              text: isLead ? '🔥 LEAD • ข้อมูลติดต่อกลับใหม่' : 'LIVE CHAT • MY-PROFILE',
+              text: isLead
+                ? '🔥 LEAD • NEW CONTACT REQUEST'
+                : 'LIVE CHAT • MY-PROFILE',
               weight: 'bold',
               color: isLead ? '#ccfbf1' : '#2dd4bf',
               size: 'xs',
             },
             {
               type: 'text',
-              text: isLead ? `มีผู้สนใจติดต่อจากห้อง #${sessionId}` : `ข้อความจากห้อง #${sessionId}`,
+              text: isLead
+                ? `New inquiry from session #${sessionId}`
+                : `Message from session #${sessionId}`,
               weight: 'bold',
               color: '#ffffff',
               size: 'md',
@@ -201,7 +215,9 @@ export class ContactService {
           contents: [
             {
               type: 'text',
-              text: isLead ? '📋 รายละเอียดการติดต่อกลับ:' : '💬 ข้อความจากผู้ติดต่อ:',
+              text: isLead
+                ? '📋 Contact Request Details:'
+                : '💬 Visitor Message:',
               size: 'xs',
               color: '#64748b',
               weight: 'bold',
@@ -227,14 +243,14 @@ export class ContactService {
               contents: [
                 {
                   type: 'text',
-                  text: '💡 วิธีตอบกลับเข้าห้องแชทนี้:',
+                  text: '💡 How to reply to this chat room:',
                   size: 'xxs',
                   color: '#475569',
                   weight: 'bold',
                 },
                 {
                   type: 'text',
-                  text: `พิมพ์: #${sessionId} ตามด้วยข้อความของคุณ`,
+                  text: `Type: #${sessionId} followed by your message`,
                   size: 'xs',
                   color: '#0f766e',
                   weight: 'bold',
@@ -314,14 +330,16 @@ export class ContactService {
                   messages: [
                     {
                       type: 'text',
-                      text: `✅ ส่งข้อความตอบกลับไปยังห้อง #${targetSessionId} บนเว็บเรียบร้อยแล้วครับ!`,
+                      text: `✅ Reply sent to session #${targetSessionId} on the website successfully!`,
                     },
                   ],
                 }),
                 signal: AbortSignal.timeout(10000),
               });
             } catch (err: any) {
-              this.logger.error(`Error sending reply confirmation: ${err.message}`);
+              this.logger.error(
+                `Error sending reply confirmation: ${err.message}`,
+              );
             }
           }
         }

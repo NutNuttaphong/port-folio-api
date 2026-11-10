@@ -1,5 +1,7 @@
+import { JwtAuthGuard } from '../common/jwt-auth.guard';
 import {
   Controller,
+  UseGuards,
   Get,
   Post,
   Body,
@@ -24,18 +26,24 @@ export interface LocalFile {
 function parseTags(rawTags: any): string[] {
   if (!rawTags) return [];
   if (Array.isArray(rawTags)) {
-    return rawTags.map(String).map((t) => t.trim()).filter(Boolean);
+    return rawTags
+      .map(String)
+      .map((t) => t.trim())
+      .filter(Boolean);
   }
   if (typeof rawTags === 'string') {
     try {
       const parsed = JSON.parse(rawTags);
       if (Array.isArray(parsed)) {
-        return parsed.map(String).map((t) => t.trim()).filter(Boolean);
+        return parsed
+          .map(String)
+          .map((t) => t.trim())
+          .filter(Boolean);
       }
     } catch {
       // Fallback: handle comma-separated or bracketed strings like [a, b]
       return rawTags
-        .replace(/^[\[\s]+|[\]\s]+$/g, '')
+        .replace(/^[[\s]+|[\]\s]+$/g, '')
         .split(',')
         .map((t) => t.replace(/^["'\s]+|["'\s]+$/g, '').trim())
         .filter(Boolean);
@@ -51,6 +59,7 @@ export class ProjectController {
   // ==========================================
   // 1. ฟังก์ชัน Create (เพิ่มข้อมูล)
   // ==========================================
+  @UseGuards(JwtAuthGuard)
   @Post()
   @UseInterceptors(FileInterceptor('image', multerOptions))
   async create(
@@ -83,6 +92,7 @@ export class ProjectController {
   // ==========================================
   // 3. ฟังก์ชัน Update (แก้ไขข้อมูล)
   // ==========================================
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @UseInterceptors(FileInterceptor('image', multerOptions)) // 🔥 ติดอาวุธรับไฟล์ให้ Patch ด้วย
   async update(
@@ -103,6 +113,7 @@ export class ProjectController {
   // ==========================================
   // 4. ฟังก์ชัน Delete (ลบข้อมูล)
   // ==========================================
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.projectService.remove(id);

@@ -7,8 +7,8 @@ export class SendUserMessageDto {
   sessionId!: string;
 
   @IsString()
-  @IsNotEmpty({ message: 'กรุณากรอกข้อความ' })
-  @MaxLength(500, { message: 'ข้อความมีความยาวเกิน 500 ตัวอักษร' })
+  @IsNotEmpty({ message: 'Message is required' })
+  @MaxLength(500, { message: 'Message exceeds 500 characters' })
   message!: string;
 
   @IsOptional()
@@ -23,7 +23,7 @@ export class AdminReplyDto {
   sessionId!: string;
 
   @IsString()
-  @IsNotEmpty({ message: 'กรุณากรอกข้อความตอบกลับ' })
-  @MaxLength(500, { message: 'ข้อความมีความยาวเกิน 500 ตัวอักษร' })
+  @IsNotEmpty({ message: 'Reply message is required' })
+  @MaxLength(500, { message: 'Reply exceeds 500 characters' })
   message!: string;
 }
