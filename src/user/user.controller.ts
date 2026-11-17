@@ -53,7 +53,15 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  @UseInterceptors(FileInterceptor('image', multerOptions))
+  update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+    @UploadedFile() file?: LocalFile,
+  ) {
+    if (file) {
+      updateUserDto.imageUrl = `/uploads/${file.filename}`;
+    }
     return this.userService.update(id, updateUserDto);
   }
 

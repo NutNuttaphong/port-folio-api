@@ -32,8 +32,10 @@ export class UserService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    if (updateUserDto.password) {
+    if (updateUserDto.password && updateUserDto.password.trim() !== '') {
       updateUserDto.password = bcrypt.hashSync(updateUserDto.password, 10);
+    } else {
+      delete updateUserDto.password;
     }
     return this.userModel
       .findByIdAndUpdate(id, updateUserDto, { new: true })
